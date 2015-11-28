@@ -4,45 +4,41 @@ var Model = require('objection').Model;
  * @extends Model
  * @constructor
  */
-function Movie() {
+function Drink() {
   Model.apply(this, arguments);
 }
 
-Model.extend(Movie);
-module.exports = Movie;
+Model.extend(Drink);
+module.exports = Drink;
 
 // Table name is the only required property.
-Movie.tableName = 'Movie';
+Drink.tableName = 'Drink';
 
 // Optional JSON schema. This is not the database schema! Nothing is generated
 // based on this. This is only used for validation. Whenever a model instance
 // is created it is checked against this schema. http://json-schema.org/.
-Movie.jsonSchema = {
+Drink.jsonSchema = {
   type: 'object',
-  required: ['name'],
+  required: ['name', 'ethanolGrams'],
 
   properties: {
     id: {type: 'integer'},
-    name: {type: 'string', minLength: 1, maxLength: 255}
+    name: {type: 'string', minLength: 1, maxLength: 32},
+    ethanolGrams: {type: 'integer', min: 0, max: 1000 /* kills 200kg male instantly so probably big enough */}
   }
 };
 
 // This object defines the relations to other models.
-Movie.relationMappings = {
-  actors: {
-    relation: Model.ManyToManyRelation,
+Drink.relationMappings = {
+  dranks: {
+    relation: Model.OneToManyRelation,
     // The related model. This can be either a Model subclass constructor or an
     // absolute file path to a module that exports one. We use the file path version
     // here to prevent require loops.
-    modelClass: __dirname + '/Person',
+    modelClass: __dirname + '/Drank',
     join: {
-      from: 'Movie.id',
-      // ManyToMany relation needs the `through` object to describe the join table.
-      through: {
-        from: 'Person_Movie.movieId',
-        to: 'Person_Movie.personId'
-      },
-      to: 'Person.id'
+      from: 'Drink.id',
+      to: 'Drank.drinkId'
     }
   }
 };

@@ -1,163 +1,182 @@
-var objection = require('objection');
-var Person = require('./models/Person');
-var Movie = require('./models/Movie');
+var Drank = require('./models/Drank');
+var Drink = require('./models/Drink');
+var Drunkard = require('./models/Drunkard');
 
 module.exports = function (app) {
 
-  // Create a new Person.
-  app.post('/persons', function (req, res, next) {
-    Person
-      .query()
-      .insert(req.body)
-      .then(function (person) { res.send(person); })
-      .catch(next);
-  });
-
-
-  // Patch a Person.
-  app.patch('/persons/:id', function (req, res, next) {
-    Person
-      .query()
-      .where('id', req.params.id)
-      .patch(req.body)
-      .then(function (person) { res.send(person); })
-      .catch(next);
-  });
-
-
-  // Get all Persons. The result can be filtered using query parameters
-  // `minAge`, `maxAge` and `firstName`. Relations can be fetched eagerly
+  // Get all Drunkards. Relations can be fetched eagerly
   // by giving a relation expression as the `eager` query parameter.
-  app.get('/persons', function (req, res, next) {
+  app.get('/drunkards', function (req, res, next) {
     // We don't need to check for the existence of the query parameters.
     // The query builder methods do nothing if one of the values is undefined.
-    Person
+    Drunkard
       .query()
-      .allowEager('[pets, children.[pets, movies], movies]')
       .eager(req.query.eager)
-      .where('age', '>=', req.query.minAge)
-      .where('age', '<', req.query.maxAge)
-      .where('firstName', 'like', req.query.firstName)
-      .then(function (persons) { res.send(persons); })
+      .then(function (drunkards) { res.send(drunkards); })
       .catch(next);
   });
 
+  // Get one Drunkard. Relations can be fetched eagerly
+  // by giving a relation expression as the `eager` query parameter.
+  app.get('/drunkards/:id', function (req, res, next) {
+    // We don't need to check for the existence of the query parameters.
+    // The query builder methods do nothing if one of the values is undefined.
+    Drunkard
+      .query()
+      .where('id', req.params.id)
+      .eager(req.query.eager)
+      .then(function (drunkard) {
+        if (!drunkard[0]) {
+          return throwNotFound();
+        }
+        res.send(drunkard[0]);
+      })
+      .catch(next);
+  });
 
-  // Delete a person.
-  app.delete('/persons/:id', function (req, res, next) {
-    Person
+  // Create a new Drunkard.
+  app.post('/drunkards', function (req, res, next) {
+    Drunkard
+      .query()
+      .insert(req.body)
+      .then(function (drunkard) { res.send(201, drunkard); })
+      .catch(next);
+  });
+
+  // Patch a Drunkard.
+  app.put('/drunkards/:id', function (req, res, next) {
+    Drunkard
+      .query()
+      .updateAndFetchById(req.params.id, req.body)
+      .then(function (drunkard) {
+        if (!drunkard) {
+          return throwNotFound();
+        }
+        res.send(drunkard);
+      })
+      .catch(next);
+  });
+
+  // Delete a Drink.
+  app.delete('/drunkards/:id', function (req, res, next) {
+    Drunkard
       .query()
       .delete()
       .where('id', req.params.id)
-      .then(function () { res.send({}); })
+      .then(function (numDeleted) {
+        if (numDeleted === 0) {
+          return throwNotFound();
+        }
+        res.send({id: req.params.id});
+      })
       .catch(next);
   });
 
-
-  // Add a child for a Person.
-  app.post('/persons/:id/children', function (req, res, next) {
-    Person
+  // Get all Drinks. Relations can be fetched eagerly
+  // by giving a relation expression as the `eager` query parameter.
+  app.get('/drinks', function (req, res, next) {
+    // We don't need to check for the existence of the query parameters.
+    // The query builder methods do nothing if one of the values is undefined.
+    Drink
       .query()
-      .where('id', req.params.id)
-      .first()
-      .then(function (person) {
-        if (!person) { throwNotFound(); }
-        return person
-          .$relatedQuery('children')
-          .insert(req.body);
-      })
-      .then(function (child) { res.send(child); })
+      .eager(req.query.eager)
+      .then(function (drinks) { res.send(drinks); })
       .catch(next);
   });
 
-
-  // Add a pet for a Person.
-  app.post('/persons/:id/pets', function (req, res, next) {
-    Person
+  // Get one Drink. Relations can be fetched eagerly
+  // by giving a relation expression as the `eager` query parameter.
+  app.get('/drinks/:id', function (req, res, next) {
+    // We don't need to check for the existence of the query parameters.
+    // The query builder methods do nothing if one of the values is undefined.
+    Drink
       .query()
       .where('id', req.params.id)
-      .first()
-      .then(function (person) {
-        if (!person) { throwNotFound(); }
-        return person
-          .$relatedQuery('pets')
-          .insert(req.body);
+      .eager(req.query.eager)
+      .then(function (drink) {
+        if (!drink[0]) {
+          return throwNotFound();
+        }
+        res.send(drink[0]);
       })
-      .then(function (pet) { res.send(pet); })
       .catch(next);
   });
 
-
-  // Get a Person's pets. The result can be filtered using query parameters
-  // `name` and `species`.
-  app.get('/persons/:id/pets', function (req, res, next) {
-    Person
+  // Create a new Drink.
+  app.post('/drinks', function (req, res, next) {
+    Drink
       .query()
-      .where('id', req.params.id)
-      .first()
-      .then(function (person) {
-        if (!person) { throwNotFound(); }
-        // We don't need to check for the existence of the query parameters.
-        // The query builder methods do nothing if one of the values is undefined.
-        return person
-          .$relatedQuery('pets')
-          .where('name', 'like', req.query.name)
-          .where('species', req.query.species);
-      })
-      .then(function (pets) { res.send(pets); })
+      .insert(req.body)
+      .then(function (drink) { res.send(201, drink); })
       .catch(next);
   });
 
-
-  // Add a movie for a Person.
-  app.post('/persons/:id/movies', function (req, res, next) {
-    // Inserting a movie for a person creates two queries: the movie insert query
-    // and the join table row insert query. It is wise to use a transaction here.
-    objection.transaction(Person, function (Person) {
-      return Person
-        .query()
-        .where('id', req.params.id)
-        .first()
-        .then(function (person) {
-          if (!person) { throwNotFound(); }
-          return person
-            .$relatedQuery('movies')
-            .insert(req.body);
-        });
-    }).then(function (movie) {
-      res.send(movie);
-    }).catch(next);
-  });
-
-
-  // Add existing Person as an actor to a movie.
-  app.post('/movies/:id/actors', function (req, res, next) {
-    Movie
+  // Patch a Drink.
+  app.put('/drinks/:id', function (req, res, next) {
+    Drink
       .query()
-      .where('id', req.params.id)
-      .first()
-      .then(function (movie) {
-        if (!movie) { throwNotFound(); }
-        return movie
-          .$relatedQuery('actors')
-          .relate(req.body.id);
+      .updateAndFetchById(req.params.id, req.body)
+      .then(function (drink) {
+        if (!drink) {
+          return throwNotFound();
+        }
+        res.send(drink);
       })
-      .then(function () { res.send(req.body); })
       .catch(next);
   });
 
+  // Delete a Drink.
+  app.delete('/drinks/:id', function (req, res, next) {
+    Drink
+      .query()
+      .delete()
+      .where('id', req.params.id)
+      .then(function (numDeleted) {
+        if (numDeleted === 0) {
+          return throwNotFound();
+        }
+        res.send({id: req.params.id});
+      })
+      .catch(next);
+  });
 
-  // Get Movie's actors.
-  app.get('/movies/:id/actors', function (req, res, next) {
-    Movie
+  // Get all Dranks. Relations can be fetched eagerly
+  // by giving a relation expression as the `eager` query parameter.
+  app.get('/dranks', function (req, res, next) {
+    // We don't need to check for the existence of the query parameters.
+    // The query builder methods do nothing if one of the values is undefined.
+    Drank
+      .query()
+      .eager(req.query.eager)
+      .then(function (dranks) { res.send(dranks); })
+      .catch(next);
+  });
+
+  // Get one Drank. Relations can be fetched eagerly
+  // by giving a relation expression as the `eager` query parameter.
+  app.get('/dranks/:id', function (req, res, next) {
+    // We don't need to check for the existence of the query parameters.
+    // The query builder methods do nothing if one of the values is undefined.
+    Drank
       .query()
       .where('id', req.params.id)
-      .first()
-      .then(function (movie) {
-        if (!movie) { throwNotFound(); }
-        return movie.$relatedQuery('actors');
+      .eager(req.query.eager)
+      .then(function (drank) {
+        if (!drank[0]) {
+          return throwNotFound();
+        }
+        res.send(drank[0]);
       })
-      .then(function (actors) { res.send(actors); })
+      .catch(next);
+  });
+
+  // Create a new Drank.
+  app.post('/dranks', function (req, res, next) {
+    req.body.dateTime = (new Date()).toISOString();
+    Drank
+      .query()
+      .insert(req.body)
+      .then(function (drank) { res.send(201, drank); })
       .catch(next);
   });
 
@@ -166,5 +185,6 @@ module.exports = function (app) {
 function throwNotFound() {
   var error = new Error();
   error.statusCode = 404;
+  error.message = 'not found';
   throw error;
 }

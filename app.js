@@ -25,12 +25,16 @@ registerApi(app);
 // Error handling.
 app.use(function (err, req, res, next) {
   if (err) {
-    res.status(err.statusCode || err.status || 500).send(err.data || err.message || {});
+    var statusCode = err.statusCode || err.status || 500;
+    res.status(statusCode).send(err.data || err.message || 'haista vittu');
+    if (statusCode === 500) {
+      console.log(err.stack);
+    }
   } else {
     next();
   }
 });
 
 var server = app.listen(8641, function () {
-  console.log('Example app listening at port %s', server.address().port);
+  console.log('Listening for drunkards at port %s', server.address().port);
 });

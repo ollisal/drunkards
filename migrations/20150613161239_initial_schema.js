@@ -1,35 +1,31 @@
 
 exports.up = function (knex) {
   return knex.schema
-    .createTable('Person', function (table) {
+    .createTable('Drunkard', function (table) {
       table.bigincrements('id').primary();
-      table.biginteger('parentId').unsigned().references('id').inTable('Person');
-      table.string('firstName');
-      table.string('lastName');
-      table.integer('age');
-      table.json('address');
+      table.string('name', 32).notNullable().unique();
+      table.enum('sex', ['penis', 'vagina']).notNullable();
+      table.integer('bodyWeightKilograms').unsigned().notNullable();
+      table.integer('idealDrunkennessLow').unsigned().notNullable().defaultTo(10); // 1 promille
+      table.integer('idealDrunkennessHigh').unsigned().notNullable().defaultTo(15); // 1.5 promilles
     })
-    .createTable('Movie', function (table) {
+    .createTable('Drink', function (table) {
       table.bigincrements('id').primary();
-      table.string('name');
+      table.string('name', 32).notNullable().unique();
+      table.integer('ethanolGrams').unsigned().notNullable();
+      // TODO pics etc
     })
-    .createTable('Animal', function (table) {
+    .createTable('Drank', function (table) {
       table.bigincrements('id').primary();
-      table.biginteger('ownerId').unsigned().references('id').inTable('Person');
-      table.string('name');
-      table.string('species');
-    })
-    .createTable('Person_Movie', function (table) {
-      table.bigincrements('id').primary();
-      table.biginteger('personId').unsigned().references('id').inTable('Person').onDelete('CASCADE');
-      table.biginteger('movieId').unsigned().references('id').inTable('Movie').onDelete('CASCADE');
+      table.biginteger('drunkardId').unsigned().references('id').inTable('Drunkard');
+      table.biginteger('drinkId').unsigned().references('id').inTable('Drink');
+      table.dateTime('dateTime').notNullable()
     });
 };
 
 exports.down = function (knex) {
   return knex.schema
-    .dropTableIfExists('Person_Movie')
-    .dropTableIfExists('Animal')
-    .dropTableIfExists('Movie')
-    .dropTableIfExists('Person');
+    .dropTableIfExists('Drank')
+    .dropTableIfExists('Drink')
+    .dropTableIfExists('Drunkard');
 };
