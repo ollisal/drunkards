@@ -3,11 +3,21 @@
 <head>
   <meta charset="utf-8">
   <title>State of drunkenness</title>
+
+  <!-- Library JavaScript -->
+  <script src="../node_modules/angular/angular.js"></script>
+  <script src="../node_modules/angular-ui-bootstrap/ui-bootstrap-tpls.js"></script>
   <script type="text/javascript" src="Chart.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script src="moment.min.js"></script>
   <script src="http://10.0.1.47:8641/socket.io/socket.io.js"></script>
+
+  <!-- Application JavaScript -->
   <script src="script.js"></script>
+
+  <!-- Application stylesheet -->
+  <link rel="stylesheet" type="text/css" href="build/dashboardClient.css">
+
   <style>
     div {
       color: #363636;
@@ -89,7 +99,7 @@
     }
   </style>
 </head>
-<body onLoad="init()">
+<body>
 
 <header>
   <img src="logo.png" alt="">
