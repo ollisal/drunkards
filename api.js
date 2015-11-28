@@ -2,6 +2,8 @@ var Drank = require('./models/Drank');
 var Drink = require('./models/Drink');
 var Drunkard = require('./models/Drunkard');
 
+var _ = require('lodash');
+
 module.exports = function (app) {
 
   // Get all Drunkards. Relations can be fetched eagerly
@@ -39,7 +41,10 @@ module.exports = function (app) {
     Drunkard
       .query()
       .insert(req.body)
-      .then(function (drunkard) { res.send(201, drunkard); })
+      .then(function (drunkard) {
+        res.send(201, drunkard);
+        allSockets.emit('newDrunkard', drunkard);
+      })
       .catch(next);
   });
 
@@ -107,7 +112,10 @@ module.exports = function (app) {
     Drink
       .query()
       .insert(req.body)
-      .then(function (drink) { res.send(201, drink); })
+      .then(function (drink) {
+        res.send(201, drink);
+        allSockets.emit('newDrink', drink);
+      })
       .catch(next);
   });
 
@@ -176,10 +184,65 @@ module.exports = function (app) {
     Drank
       .query()
       .insert(req.body)
-      .then(function (drank) { res.send(201, drank); })
+      .then(function (drank) {
+        return Drank
+          .query()
+          .where('id', drank.id)
+          .eager('[drunkard, drink]')
+          .then(function (eageredDrank) {
+            allSockets.emit('newDrank', eageredDrank[0]);
+            res.send(201, eageredDrank[0]);
+          });
+      })
       .catch(next);
   });
 
+};
+
+var allSockets = null;
+
+module.exports.socketStuff = function (io) {
+  allSockets = io;
+
+  io.on('connection', function (socket) {
+    console.log(socket.id, 'connected');
+
+    socket.on('floodMe', function () {
+      console.log(socket.id, 'wants us to flood them');
+
+      Drink
+        .query()
+        .then(function sendDrinks(drinks) {
+          console.log('flooding with', drinks.length, 'drinks');
+
+          _.each(drinks, function (drink) {
+            socket.emit('newDrink', drink);
+          });
+
+          return Drunkard.query();
+        })
+        .then(function sendDrunkards(drunkards) {
+          console.log('flooding with', drunkards.length, 'drunkards');
+
+          _.each(drunkards, function (drunkard) {
+            socket.emit('newDrunkard', drunkard);
+          });
+
+          return Drank.query().eager('[drunkard, drink]')
+        })
+        .then(function sendDranks(dranks) {
+          console.log('flooding with', dranks.length, 'dranks');
+
+          _.each(dranks, function (drank) {
+            socket.emit('newDrank', drank);
+          });
+        });
+    });
+
+    socket.on('disconnect', function () {
+      console.log(socket.id, 'disconnected');
+    })
+  });
 };
 
 function throwNotFound() {
