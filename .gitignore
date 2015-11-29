@@ -2,3 +2,4 @@
 /node_modules
 *.iml
 /*.db
+/dashboardClient/build
