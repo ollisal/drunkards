@@ -254,7 +254,17 @@ m.factory('dranks', function ($rootScope, events, highlightedDrunkard) {
       maintainAspectRatio: false,
       showTooltips: false,
       scaleIntegersOnly: false,
-      scaleLabel: "<%= ' ' + value%>"
+      scaleLabel: "<%= ' ' + value%>",
+      // Boolean - If we want to override with a hard coded scale
+      scaleOverride: true,
+
+      // ** Required if scaleOverride is true **
+      // Number - The number of steps in a hard coded scale
+      scaleSteps: 8,
+      // Number - The value jump in the hard coded scale
+      scaleStepWidth: 0.25,
+      // Number - The scale starting value
+      scaleStartValue: 0.0
     });
 
     $rootScope.$apply(function () {
@@ -267,7 +277,7 @@ m.factory('dranks', function ($rootScope, events, highlightedDrunkard) {
       });
       highlightedDrunkard.highestEbacEva = _.max(plotter[2].concat(highlightedDrunkard.highestEbacEva));
     });
-  }, 3000);
+  }, 5000);
 
   return dranks;
 });
