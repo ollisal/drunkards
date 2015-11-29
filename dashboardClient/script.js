@@ -1,49 +1,97 @@
-var hour = moment().hour() + 8;
+/*var hour = moment().hour() + 8;
 var hoursArray = [];
 var lineDiagramData = {real: [], future: []};
+*/
 
 var socket = io('http://10.0.1.47:8641');
 
-socket.on('newDrink', function (drink) {
-  newReport("A new revolutionary drink, " + drink.name + ", has been devised. It contains " + drink.ethanolGrams + ' grams of good old ethanol per portion.');
+/**
+ * Application main module.
+ */
+var m = angular.module('wastedland', [
+  'ui.bootstrap'
+]);
+
+m.value('events', []);
+
+m.factory('drinks', function ($rootScope, events) {
+  var drinks = {
+    items: []
+  };
+
+  socket.on('newDrink', function (drink) {
+    $rootScope.$apply(function () {
+      drinks.items.push(drink);
+      events.push("A new revolutionary drink, " + drink.name +
+        ", has been devised. It contains " + drink.ethanolGrams +
+        ' grams of good old ethanol per portion.');
+    });
+  });
+
+  return drinks;
 });
 
-socket.on('newDrunkard', function (drunkard) {
-  var roll = Math.random();
-  if (roll < 0.3) {
-    newReport('New challenger ' + drunkard.name + ' has appeared!');
-  } else if (roll < 0.5) {
-    newReport(drunkard.name + ' is going to get drunk tonight!');
-  } else if (roll < 0.8) {
-    newReport(drunkard.name + ', a born drunkard, has joined the fun.');
-  } else {
-    newReport(drunkard.name + ' has joined the booze race. KMikkos minions grow stronger!');
-  }
+m.factory('drunkards', function ($rootScope, events) {
+  var drunkards = {
+    items: []
+  };
+
+  socket.on('newDrunkard', function (drunkard) {
+    $rootScope.$apply(function () {
+      drunkards.items.push(drunkard);
+      var roll = Math.random();
+      if (roll < 0.3) {
+        events.push('New challenger ' + drunkard.name + ' has appeared!');
+      } else if (roll < 0.5) {
+        events.push(drunkard.name + ' is going to get drunk tonight!');
+      } else if (roll < 0.8) {
+        events.push(drunkard.name + ', a born drunkard, has joined the fun.');
+      } else {
+        events.push(drunkard.name + ' has joined the booze race. KMikkos minions grow stronger!');
+      }
+    });
+  });
+
+  return drunkards;
 });
 
-socket.on('newDrank', function (drank) {
-  var timeToNext = 10 + Math.random() * 30;
-  var whenNextDrank = moment(drank.dateTime).add(timeToNext, 'minutes').format("HH:mm");
-  var roll = Math.random();
-  if (roll < 0.3) {
-    newReport(drank.drunkard.name + ' finished another ' + drank.drink.name +
-      ' and added ' + drank.drink.ethanolGrams + 'g of alcohol to his bodily fluids. At this rate of consumption he will pass out approximately ' +
-      whenNextDrank + ' today.');
-  } else if (roll < 0.5) {
-    newReport(drank.drunkard.name + ' drank a ' + drank.drink.name +
-      '. It is likely that he will finish his next drink at ' + whenNextDrank);
-  } else {
-    newReport(drank.drunkard.name + ' got even drunker by emptying a ' + drank.drink.name);
-  }
+m.factory('dranks', function ($rootScope, events) {
+  var dranks = {
+    items: []
+  };
+
+  socket.on('newDrank', function (drank) {
+    $rootScope.$apply(function () {
+      dranks.items.push(drank);
+      var timeToNext = 10 + Math.random() * 30;
+      var whenNextDrank = moment(drank.dateTime).add(timeToNext, 'minutes').format("HH:mm");
+      var roll = Math.random();
+      if (roll < 0.3) {
+        events.push(drank.drunkard.name + ' finished another ' + drank.drink.name +
+          ' and added ' + drank.drink.ethanolGrams + 'g of alcohol to his bodily fluids. At this rate of consumption he will pass out approximately ' +
+          whenNextDrank + ' today.');
+      } else if (roll < 0.5) {
+        events.push(drank.drunkard.name + ' drank a ' + drank.drink.name +
+          '. It is likely that he will finish his next drink at ' + whenNextDrank);
+      } else {
+        events.push(drank.drunkard.name + ' got even drunker by emptying a ' + drank.drink.name);
+      }
+    });
+  });
+
+  return dranks;
 });
 
-socket.emit('floodMe');
+m.factory('flood', function (drinks, drunkards, dranks) {
+  socket.emit('floodMe');
+  return {};
+});
 
-function newReport(text) {
-  $('#liveReportItems').prepend("<li>" + text + "</li>");
-}
+m.controller('EventsController', function (flood, events) {
+  this.items = events;
+});
 
-
+/*
 for (var i = 0; i < 24; ++i) {
   hoursArray.push((hour + i) % 24 + ":00");
   var alcoholLevel = Math.floor((Math.random() * 400) + 1) / 100;
@@ -121,3 +169,4 @@ function flip(id) {
 }
 //setTimeout(function() {newLDValue('Olli', [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]);}, 5000);
 //setTimeout(function() {upSize('promilleBox');}, 5000);
+*/

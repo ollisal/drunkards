@@ -18,7 +18,7 @@
   <!-- Application stylesheet -->
   <link rel="stylesheet" type="text/css" href="build/dashboardClient.css">
 </head>
-<body>
+<body ng-app="wastedland">
 
 <div class="container-fluid">
   <div class="row topbar">
@@ -33,8 +33,16 @@
   </div>
 
   <div class="row">
+    <ui-view></ui-view>
+  </div>
+
+  <div class="row">
     <div class="col-xs-12">
-      <div class="well fallout" id="liveReportItems"></div>
+      <div class="well fallout" ng-controller="EventsController as events" id="liveReportItems">
+        <li ng-repeat="item in events.items | limitTo:-10 track by $index">
+          {{item}}
+        </li>
+      </div>
     </div>
   </div>
 </div>
