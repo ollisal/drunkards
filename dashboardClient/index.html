@@ -135,10 +135,10 @@
                 ng-show="drunkard.stats.name">
             <b>{{drunkard.stats.name}}</b>
 
-            <i class="fa fa-mars" ng-show="drunkard.stats.sex === 'penis'"></i>
-            <i class="fa fa-venus" ng-show="drunkard.stats.sex === 'vagina'"></i>
+            <i class="trivia-stat fa fa-mars" ng-show="drunkard.stats.sex === 'penis'"></i>
+            <i class="trivia-stat fa fa-venus" ng-show="drunkard.stats.sex === 'vagina'"></i>
 
-            {{drunkard.stats.weight | number:0}}kg
+            <span class="trivia-stat">{{drunkard.stats.weight | number:0}}kg</span>
 
             {{drunkard.stats.ebac | number:2}}&#8240;
 
@@ -157,7 +157,7 @@
   <div class="row">
     <div class="col-xs-12">
       <div class="well fallout shadow" ng-controller="EventsController as events" id="liveReportItems">
-        <li ng-repeat="item in events.items | limitTo:-10 track by $index">
+        <li ng-repeat="item in events.items | limitTo:-12 track by $index">
           {{item}}
         </li>
       </div>

@@ -57,4 +57,10 @@
     color: white;
     word-spacing: 3px;
   }
+
+  .trivia-stat {
+    @media (max-width: $screen-sm-max) {
+      display: none;
+    }
+  }
 }
