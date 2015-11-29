@@ -215,7 +215,7 @@ m.factory('dranks', function ($rootScope, events, highlightedDrunkard) {
 
     var name;
     _.forEachRight(_.sortBy(dranks.items, 'dateTime'), function maybeTakeDude(drank) {
-      if (Math.random() > 0.9) {
+      if (Math.random() > 0.8) {
         name = drank.drunkard.name;
         return false;
       }
@@ -230,7 +230,13 @@ m.factory('dranks', function ($rootScope, events, highlightedDrunkard) {
 
     var ctx = $("#alcoholLevel").get(0).getContext("2d");
     var data = {
-      labels: plotter[0],
+      labels: _.map(plotter[0], function (hour, index) {
+        if (index % 2 !== 0) {
+          return '';
+        } else {
+          return hour;
+        }
+      }),
       datasets: [
         {
           fillColor: "transparent",
@@ -260,7 +266,7 @@ m.factory('dranks', function ($rootScope, events, highlightedDrunkard) {
 
       // ** Required if scaleOverride is true **
       // Number - The number of steps in a hard coded scale
-      scaleSteps: 8,
+      scaleSteps: 5,
       // Number - The value jump in the hard coded scale
       scaleStepWidth: 0.25,
       // Number - The scale starting value
