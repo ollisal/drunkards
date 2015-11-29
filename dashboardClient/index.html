@@ -56,14 +56,14 @@
           <form name="reportForm" class="form-horizontal" novalidate>
             <div class="form-group">
               <label for="reportDrunkard" class="col-xs-2 control-label">Drunkard</label>
-              <div class="col-xs-8 col-sm-9">
+              <div class="col-xs-8 col-sm-7">
                 <select id="reportDrunkard" class="form-control" ng-model="report.selectedDrunkardId">
                   <option value="" selected>Select</option>
                   <option ng-repeat="drunkard in report.drunkards | orderBy:'name'" value="{{drunkard.id}}">{{drunkard.name}}</option>
                 </select>
               </div>
 
-              <div class="col-xs-2 col-sm-1">
+              <div class="col-xs-2 col-sm-3">
                 <button type="button"
                         class="btn btn-block"
                         ui-sref="editDrunkard({id: report.selectedDrunkardId})">
@@ -79,14 +79,14 @@
 
             <div class="form-group">
               <label for="reportDrink" class="col-xs-2 control-label">Drink</label>
-              <div class="col-xs-8 col-sm-9">
+              <div class="col-xs-8 col-sm-7">
                 <select id="reportDrink" class="form-control" ng-model="report.selectedDrinkId">
                   <option value="" selected>Select</option>
                   <option ng-repeat="drink in report.drinks | orderBy:'name'" value="{{drink.id}}">{{drink.name}}</option>
                 </select>
               </div>
 
-              <div class="col-xs-2 col-sm-1">
+              <div class="col-xs-2 col-sm-3">
                 <button type="button"
                         class="btn btn-block"
                         ui-sref="editDrink({id: report.selectedDrinkId})">
