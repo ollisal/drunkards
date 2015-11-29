@@ -3,7 +3,7 @@ var hoursArray = [];
 var lineDiagramData = {real: [], future: []};
 */
 
-var serverAddress = 'http://ec2-54-194-210-241.eu-west-1.compute.amazonaws.com:8641';
+var serverAddress = 'http://ec2-54-194-210-241.eu-west-1.compute.amazonaws.com';
 
 var socket = io(serverAddress);
 

@@ -49,6 +49,6 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 registerApi.socketStuff(io);
 
-server.listen(8641, function () {
+server.listen(80, function () {
   console.log('Listening for drunkards at port %s', server.address().port);
 });
