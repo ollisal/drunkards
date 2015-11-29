@@ -119,6 +119,21 @@
       <div class="panel panel-primary shadow graph-panel">
         <div class="panel-heading">
           BAC-Boy 3000
+
+          <span class="pull-right"
+                ng-controller="HighlightedDrunkardController as drunkard"
+                ng-show="drunkard.stats.name">
+            <b>{{drunkard.stats.name}}</b>
+
+            <i class="fa fa-mars" ng-show="drunkard.stats.sex === 'penis'"></i>
+            <i class="fa fa-venus" ng-show="drunkard.stats.sex === 'vagina'"></i>
+
+            {{drunkard.stats.weight | number:0}}kg
+
+            {{drunkard.stats.ebac | number:2}}&#8240;
+
+            {{drunkard.stats.drinkAmount}}&nbsp;<i class='fa fa-beer'></i>
+          </span>
           <span id="bacName" class="pull-right">
           </span>
         </div>

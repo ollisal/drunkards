@@ -150,7 +150,17 @@ m.factory('drunkards', function ($rootScope, dranks, events) {
   return drunkards;
 });
 
-m.factory('dranks', function ($rootScope, events) {
+m.factory('highlightedDrunkard', function () {
+  return {
+    stats: {}
+  };
+});
+
+m.controller('HighlightedDrunkardController', function (highlightedDrunkard) {
+  this.stats = highlightedDrunkard.stats;
+});
+
+m.factory('dranks', function ($rootScope, events, highlightedDrunkard) {
   var dranks = {
     items: []
   };
@@ -214,11 +224,18 @@ m.factory('dranks', function ($rootScope, events) {
           data: plotter[2]
         }
       ]
-    }
-    var drunkChart = new Chart(ctx).Line(data, {bezierCurve: false});
-    var pv = (drunkardDetails[name].sex === "penis" ? "<i class='fa fa-mars'></i>" : "<i class='fa fa-venus'></i>");// ? "<i class="fa fa-mars"></i>" : "<i class="fa fa-venus"></i>"
+    };
+    var drunkChart = new Chart(ctx).Line(data, {bezierCurve: true});
 
-    $('#bacName').html("<b>" + name + "</b> &nbsp;&nbsp; " + pv + " &nbsp;&nbsp; " + drunkardDetails[name].bodyWeightKilograms + "kg &nbsp;&nbsp; "+plotter[3]+"&#8240; &nbsp;&nbsp;" + drinkAmount + " <i class='fa fa-beer'></i> &nbsp;&nbsp; ");
+    $rootScope.$apply(function () {
+      _.assign(highlightedDrunkard.stats, {
+        name: name,
+        sex: drunkardDetails[name].sex,
+        weight: drunkardDetails[name].bodyWeightKilograms,
+        ebac: plotter[3],
+        drinkAmount: drinkAmount
+      });
+    });
   }, 3000);
 
   return dranks;
