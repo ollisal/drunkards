@@ -213,8 +213,18 @@ m.factory('dranks', function ($rootScope, events, highlightedDrunkard) {
     });
     _.each(dranks.items, newDrank);
 
-    var names = Object.keys(drunkards);
-    var name = names[Math.floor(Math.random()*names.length)];
+    var name;
+    _.forEachRight(_.sortBy(dranks.items, 'dateTime'), function maybeTakeDude(drank) {
+      if (Math.random() > 0.9) {
+        name = drank.drunkard.name;
+        return false;
+      }
+    });
+
+    if (!name) {
+      var names = Object.keys(drunkards);
+      name = names[Math.floor(Math.random() * names.length)];
+    }
     var drinkAmount = drunkards[name].length;
     var plotter = plotDrunkenness(name, drunkards, drunkardDetails);
 
@@ -301,11 +311,13 @@ function plotDrunkenness(name, drunkards, drunkardDetails) {
   var drunkenness = 0;
   var lastDrink = moment().add(-17, "hours");
   var drunkennessNow = 0;
-  for (h = -15; h <= 8; ++h) {
+  for (m = -15 * 60; m <= 8 * 60; m += 10) {
     var ethanolAmount = 0;
-    var currentHour = moment().add(h, "hours");
+    var currentHour = moment().add(m, "minutes");
     var startedDrinking = false;
-    hoursArray.push(moment().add(h, "hours").format("HH") + ":00");
+    if (m % 60 === 0) {
+      hoursArray.push(moment().add(m, "minutes").format("HH") + ":00");
+    }
 
     $.each(sortedDranks, function( index, value ) {
       if (!startedDrinking) startedDrinking = moment(value.dateTime);
@@ -318,11 +330,13 @@ function plotDrunkenness(name, drunkards, drunkardDetails) {
 
     var drinkingTime = currentHour.diff(startedDrinking);
     if (drinkingTime < 0) drinkingTime = 0;
-    drunkenness = calculateDrunkenness(weight, sex, ethanolAmount, 1, drunkenness);
+    drunkenness = calculateDrunkenness(weight, sex, ethanolAmount, 1 / 6, drunkenness);
     console.log("Känniys: " + currentHour.format("HH:mm") + " - " + drunkenness);
-    future.push(drunkenness*10);
-    h <= 0 ? real.push(drunkenness*10) : real.push(null);
-    if (h == 0) drunkennessNow = drunkenness*10;
+    if (m % 60 === 0) {
+      future.push(drunkenness * 10);
+      m <= 0 ? real.push(drunkenness * 10) : real.push(null);
+      if (m === 0) drunkennessNow = drunkenness * 10;
+    }
   }
   return [hoursArray, future, real, drunkennessNow];
 }
@@ -337,7 +351,7 @@ function calculateDrunkenness(wt, sex, ethanolAmount, dp, present) {
       bw = 0.49;
       mr = 0.017;
     }
-    var ebac = Math.max( present + ((0.806 * 1.2 * sd) / (bw * wt) ) - (mr * dp), 0);
+    var ebac = Math.max( present + ((0.806 * 1.2 * sd) / (bw * wt) ) - (mr * dp / 1.2), 0);
     console.log("promillet: " + ebac);
     return ebac;
 }
