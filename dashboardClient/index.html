@@ -118,7 +118,7 @@
   <div class="row">
     <div class="col-xs-12">
       <div class="well fallout shadow" ng-controller="EventsController as events" id="liveReportItems">
-        <li ng-repeat="item in events.items | limitTo:-15 track by $index">
+        <li ng-repeat="item in events.items | limitTo:-10 track by $index">
           {{item}}
         </li>
       </div>
@@ -219,6 +219,55 @@
                       class="btn btn-primary btn-block"
                       ng-click="drunkard.save()"
                       ng-disabled="drunkardForm.$invalid">
+                Save
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</script>
+
+<script type="text/ng-template" id="drink.html">
+  <div class="col-xs-12">
+    <div class="panel panel-primary shadow">
+      <div class="panel-heading">
+        Edit drink
+      </div>
+      <div class="panel-body">
+        <form name="drinkForm" class="form-horizontal" novalidate>
+          <div class="form-group">
+            <label for="drinkName" class="col-xs-4 control-label">Name</label>
+            <div class="col-xs-8">
+              <input type="text"
+                     id="drinkName"
+                     class="form-control"
+                     ng-required="true"
+                     ng-minlength="1"
+                     ng-maxlength="32"
+                     ng-model="drink.model.name">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="drinkEthanol" class="col-xs-4 control-label">Total ethanol (g)</label>
+            <div class="col-xs-8">
+              <input type="number"
+                     id="drinkEthanol"
+                     class="form-control"
+                     ng-required="true"
+                     min="0"
+                     max="1000"
+                     ng-model="drink.model.ethanolGrams">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-xs-offset-4 col-xs-8">
+              <button type="button"
+                      class="btn btn-primary btn-block"
+                      ng-click="drink.save()"
+                      ng-disabled="drinkForm.$invalid">
                 Save
               </button>
             </div>

@@ -40,8 +40,6 @@ m.config(function ($urlRouterProvider, $stateProvider) {
         idealDrunkennessHigh: 15
       };
 
-      console.log(drunkard.model.name, drunkard.model.name.length);
-
       this.model.$idlPromilles = this.model.idealDrunkennessLow / 10;
       this.model.$idhPromilles = this.model.idealDrunkennessHigh / 10;
 
@@ -64,7 +62,37 @@ m.config(function ($urlRouterProvider, $stateProvider) {
     },
     controllerAs: 'drunkard',
     templateUrl: 'drunkard.html'
-  })
+  });
+
+  $stateProvider.state('editDrink', {
+    url: '/drink/{id}',
+    controller: function ($http, $state, $stateParams, drinks) {
+      var id = parseInt($stateParams.id, 10);
+
+      var drink = this;
+      this.model = _.find(drinks.items, 'id', id) || {
+          id: null,
+          name: '',
+          ethanolGrams: 16
+        };
+
+      this.save = function () {
+        if (drink.model.id) {
+          $http.put(serverAddress + '/drinks/' + drink.model.id, drink.model)
+            .then(function success() {
+              $state.go('front');
+            });
+        } else {
+          $http.post(serverAddress + '/drinks', drink.model)
+            .then(function success() {
+              $state.go('front');
+            });
+        }
+      }
+    },
+    controllerAs: 'drink',
+    templateUrl: 'drink.html'
+  });
 });
 
 m.value('events', []);
