@@ -3,7 +3,9 @@ var hoursArray = [];
 var lineDiagramData = {real: [], future: []};
 */
 
-var socket = io('http://10.0.1.47:8641');
+var serverAddress = 'http://ec2-54-194-210-241.eu-west-1.compute.amazonaws.com:8641';
+
+var socket = io(serverAddress);
 
 /**
  * Application main module.
@@ -89,6 +91,25 @@ m.factory('flood', function (drinks, drunkards, dranks) {
 
 m.controller('EventsController', function (flood, events) {
   this.items = events;
+});
+
+m.controller('ReportController', function ($http, drinks, drunkards) {
+  var report = this;
+
+  this.drunkards = drunkards.items;
+  this.drinks = drinks.items;
+
+  this.selectedDrunkardId = null;
+  this.selectedDrinkId = null;
+
+  this.submit = function () {
+    $http.post(serverAddress + '/dranks', {
+      drunkardId: parseInt(report.selectedDrunkardId, 10),
+      drinkId: parseInt(report.selectedDrinkId, 10)
+    }).then(function () {
+      report.selectedDrinkId = report.selectedDrunkardId = null;
+    });
+  };
 });
 
 /*

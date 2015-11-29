@@ -32,8 +32,48 @@
     </div>
   </div>
 
-  <div class="row">
-    <ui-view></ui-view>
+  <div class="row" ng-controller="ReportController as report">
+    <div class="col-xs-12">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          Report drinking
+        </div>
+        <div class="panel-body">
+          <form name="reportForm" class="form-horizontal">
+            <div class="form-group">
+              <label for="reportDrunkard" class="col-xs-2 control-label">Drunkard</label>
+              <div class="col-xs-10">
+                <select id="reportDrunkard" class="form-control" ng-model="report.selectedDrunkardId">
+                  <option value="" disabled selected>Select</option>
+                  <option ng-repeat="drunkard in report.drunkards | orderBy:'name'" value="{{drunkard.id}}">{{drunkard.name}}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="reportDrink" class="col-xs-2 control-label">Drink</label>
+              <div class="col-xs-10">
+                <select id="reportDrink" class="form-control" ng-model="report.selectedDrinkId">
+                  <option value="" disabled selected>Select</option>
+                  <option ng-repeat="drink in report.drinks | orderBy:'name'" value="{{drink.id}}">{{drink.name}}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="col-xs-offset-2 col-xs-10">
+                <button type="submit"
+                        class="btn btn-primary"
+                        ng-click="report.submit()"
+                        ng-disabled="!report.selectedDrunkardId || !report.selectedDrinkId">
+                  Has been drank
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="row">
