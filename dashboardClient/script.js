@@ -11,8 +11,61 @@ var socket = io(serverAddress);
  * Application main module.
  */
 var m = angular.module('wastedland', [
-  'ui.bootstrap'
+  'ui.bootstrap',
+  'ui.router'
 ]);
+
+m.config(function ($urlRouterProvider, $stateProvider) {
+  $urlRouterProvider.otherwise('/');
+
+  $stateProvider.state('front', {
+    url: '/',
+    templateUrl: 'front.html',
+    controller: 'ReportController',
+    controllerAs: 'report'
+  });
+
+  $stateProvider.state('editDrunkard', {
+    url: '/drunkard/{id}',
+    controller: function ($http, $state, $stateParams, drunkards) {
+      var id = parseInt($stateParams.id, 10);
+
+      var drunkard = this;
+      this.model = _.find(drunkards.items, 'id', id) || {
+        id: null,
+        name: '',
+        bodyWeightKilograms: 80,
+        sex: 'penis',
+        idealDrunkennessLow: 10,
+        idealDrunkennessHigh: 15
+      };
+
+      console.log(drunkard.model.name, drunkard.model.name.length);
+
+      this.model.$idlPromilles = this.model.idealDrunkennessLow / 10;
+      this.model.$idhPromilles = this.model.idealDrunkennessHigh / 10;
+
+      this.save = function () {
+        drunkard.model.idealDrunkennessLow = drunkard.model.$idlPromilles * 10;
+        drunkard.model.idealDrunkennessHigh = drunkard.model.$idhPromilles * 10;
+
+        if (drunkard.model.id) {
+          $http.put(serverAddress + '/drunkards/' + drunkard.model.id, drunkard.model)
+            .then(function success() {
+              $state.go('front');
+            });
+        } else {
+          $http.post(serverAddress + '/drunkards', drunkard.model)
+            .then(function success() {
+              $state.go('front');
+            });
+        }
+      }
+    },
+    controllerAs: 'drunkard',
+    templateUrl: 'drunkard.html'
+  })
+});
 
 m.value('events', []);
 
