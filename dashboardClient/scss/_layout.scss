@@ -30,6 +30,14 @@
   box-shadow: 2px 2px 20px black;
 }
 
+.totals-panel {
+  .totals-item {
+    font-size: 22px;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+}
+
 .graph-panel {
   .panel-body {
     canvas {

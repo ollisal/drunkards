@@ -152,12 +152,25 @@ m.factory('drunkards', function ($rootScope, dranks, events) {
 
 m.factory('highlightedDrunkard', function () {
   return {
-    stats: {}
+    stats: {},
+    highestEbacEva: null
   };
 });
 
 m.controller('HighlightedDrunkardController', function (highlightedDrunkard) {
   this.stats = highlightedDrunkard.stats;
+});
+
+m.controller('TotalsController', function ($rootScope, highlightedDrunkard, dranks) {
+  var totals = this;
+
+  $rootScope.$watch(_.constant(dranks.items), function () {
+    totals.numberDrank = dranks.items.length;
+    totals.totalAlcoholGrams = _.sum(dranks.items, 'drink.ethanolGrams');
+  }, true);
+  $rootScope.$watch(function () {
+    totals.highestEbacEva = highlightedDrunkard.highestEbacEva;
+  });
 });
 
 m.factory('dranks', function ($rootScope, events, highlightedDrunkard) {
@@ -235,6 +248,7 @@ m.factory('dranks', function ($rootScope, events, highlightedDrunkard) {
         ebac: plotter[3],
         drinkAmount: drinkAmount
       });
+      highlightedDrunkard.highestEbacEva = _.max(plotter[2].concat(highlightedDrunkard.highestEbacEva));
     });
   }, 3000);
 

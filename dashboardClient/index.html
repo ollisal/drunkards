@@ -113,6 +113,22 @@
           </form>
         </div>
       </div>
+
+      <div class="panel totals-panel shadow">
+        <div class="panel-body" ng-controller="TotalsController as totals">
+          <div class="row text-primary">
+            <div class="col-xs-4 totals-item text-center" ng-show="totals.numberDrank">
+              <i class="fa fa-beer"></i>&nbsp;{{totals.numberDrank}}
+            </div>
+            <div class="col-xs-4 totals-item text-center" ng-show="totals.totalAlcoholGrams">
+              <i class="fa fa-tint"></i>&nbsp;{{totals.totalAlcoholGrams}}g
+            </div>
+            <div class="col-xs-4 totals-item text-center" ng-show="totals.highestEbacEva !== null">
+              <i class="fa fa-line-chart"></i>{{totals.highestEbacEva | number:2}}&#8240;
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="col-sm-6">
