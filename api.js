@@ -217,25 +217,28 @@ module.exports.socketStuff = function (io) {
         .then(function sendDrinks(drinks) {
           console.log('flooding with', drinks.length, 'drinks');
 
-          _.each(drinks, function (drink) {
+          _.each(_.sortBy(drinks, 'id'), function (drink) {
             socket.emit('newDrink', drink);
           });
+        });
 
-          return Drunkard.query();
-        })
+      Drunkard
+        .query()
         .then(function sendDrunkards(drunkards) {
           console.log('flooding with', drunkards.length, 'drunkards');
 
-          _.each(drunkards, function (drunkard) {
+          _.each(_.sortBy(drunkards, 'id'), function (drunkard) {
             socket.emit('newDrunkard', drunkard);
           });
+        });
 
-          return Drank.query().eager('[drunkard, drink]')
-        })
+      Drank
+        .query()
+        .eager('[drunkard, drink]')
         .then(function sendDranks(dranks) {
           console.log('flooding with', dranks.length, 'dranks');
 
-          _.each(dranks, function (drank) {
+          _.each(_.sortBy(dranks, 'dateTime'), function (drank) {
             socket.emit('newDrank', drank);
           });
         });
