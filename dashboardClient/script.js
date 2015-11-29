@@ -5,12 +5,10 @@ var lineDiagramData = {real: [], future: []};
 var socket = io('http://10.0.1.47:8641');
 
 socket.on('newDrink', function (drink) {
-  console.log("New drink: ", drink);
   newReport("A new revolutionary drink, " + drink.name + ", has been devised. It contains " + drink.ethanolGrams + ' grams of good old ethanol per portion.');
 });
 
 socket.on('newDrunkard', function (drunkard) {
-  console.log("New drunkard: ", drunkard);
   var roll = Math.random();
   if (roll < 0.3) {
     newReport('New challenger ' + drunkard.name + ' has appeared!');
@@ -24,7 +22,6 @@ socket.on('newDrunkard', function (drunkard) {
 });
 
 socket.on('newDrank', function (drank) {
-  console.log("New drank: ", drank);
   var timeToNext = 10 + Math.random() * 30;
   var whenNextDrank = moment(drank.dateTime).add(timeToNext, 'minutes').format("HH:mm");
   var roll = Math.random();
