@@ -13,6 +13,7 @@
   <script src="moment.min.js"></script>
   <script src="lodash.js"></script>
   <script src="http://10.0.1.47:8641/socket.io/socket.io.js"></script>
+  <script src="lodash.js"></script>
 
   <!-- Application JavaScript -->
   <script src="script.js"></script>
@@ -115,12 +116,14 @@
     </div>
 
     <div class="col-sm-6">
-      <div class="panel panel-primary shadow">
+      <div class="panel panel-primary shadow graph-panel">
         <div class="panel-heading">
           BAC-Boy 3000
+          <span id="bacName" class="pull-right">
+          </span>
         </div>
         <div class="panel-content">
-          <h2>TODO graph here</h2>
+          <canvas id="alcoholLevel"></canvas>
         </div>
       </div>
     </div>
