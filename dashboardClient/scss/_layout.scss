@@ -31,15 +31,14 @@
 }
 
 .graph-panel {
-  .panel-content {
+  .panel-body {
     canvas {
       width: 100%;
       height: 100%;
     }
-
-    padding: 10px;
   }
 }
+
 .panel-heading {
   span {
     color: white;
