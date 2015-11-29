@@ -16,13 +16,20 @@ var m = angular.module('wastedland', [
 
 m.value('events', []);
 
-m.factory('drinks', function ($rootScope, events) {
+m.factory('drinks', function ($rootScope, dranks, events) {
   var drinks = {
     items: []
   };
 
   socket.on('newDrink', function (drink) {
     $rootScope.$apply(function () {
+      _.remove(drinks.items, 'id', drink.id);
+      _(dranks)
+        .filter('drink.id', drink.id)
+        .each(function updateDrank(drank) {
+          drank.drink = drink;
+        })
+        .commit();
       drinks.items.push(drink);
       events.push("A new revolutionary drink, " + drink.name +
         ", has been devised. It contains " + drink.ethanolGrams +
@@ -33,13 +40,20 @@ m.factory('drinks', function ($rootScope, events) {
   return drinks;
 });
 
-m.factory('drunkards', function ($rootScope, events) {
+m.factory('drunkards', function ($rootScope, dranks, events) {
   var drunkards = {
     items: []
   };
 
   socket.on('newDrunkard', function (drunkard) {
     $rootScope.$apply(function () {
+      _.remove(drunkards.items, 'id', drunkard.id);
+      _(dranks)
+        .filter('drunkard.id', drunkard.id)
+        .each(function updateDrank(drunkard) {
+          drank.drunkard = drunkard;
+        })
+        .commit();
       drunkards.items.push(drunkard);
       var roll = Math.random();
       if (roll < 0.3) {

@@ -58,6 +58,7 @@ module.exports = function (app) {
           return throwNotFound();
         }
         res.send(drunkard);
+        allSockets.emit('newDrunkard', drunkard);
       })
       .catch(next);
   });
@@ -129,6 +130,7 @@ module.exports = function (app) {
           return throwNotFound();
         }
         res.send(drink);
+        allSockets.emit('newDrink', drink);
       })
       .catch(next);
   });
