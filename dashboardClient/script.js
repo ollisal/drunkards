@@ -238,7 +238,14 @@ m.factory('dranks', function ($rootScope, events, highlightedDrunkard) {
         }
       ]
     };
-    var drunkChart = new Chart(ctx).Line(data, {bezierCurve: true});
+    var drunkChart = new Chart(ctx).Line(data, {
+      bezierCurve: true,
+      responsive: false,
+      maintainAspectRatio: false,
+      showTooltips: false,
+      scaleIntegersOnly: false,
+      scaleLabel: "<%= ' ' + value%>"
+    });
 
     $rootScope.$apply(function () {
       _.assign(highlightedDrunkard.stats, {
