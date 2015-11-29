@@ -41,7 +41,7 @@
 
   <div class="row" ng-controller="ReportController as report">
     <div class="col-xs-12">
-      <div class="panel panel-primary">
+      <div class="panel panel-primary shadow">
         <div class="panel-heading">
           Report drinking
         </div>
@@ -85,7 +85,7 @@
 
   <div class="row">
     <div class="col-xs-12">
-      <div class="well fallout" ng-controller="EventsController as events" id="liveReportItems">
+      <div class="well fallout shadow" ng-controller="EventsController as events" id="liveReportItems">
         <li ng-repeat="item in events.items | limitTo:-20 track by $index">
           {{item}}
         </li>
