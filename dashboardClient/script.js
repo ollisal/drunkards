@@ -32,7 +32,6 @@ m.config(function ($urlRouterProvider, $stateProvider) {
 
       var drunkard = this;
       this.model = _.find(drunkards.items, 'id', id) || {
-        id: null,
         name: '',
         bodyWeightKilograms: 80,
         sex: 'penis',
@@ -71,7 +70,6 @@ m.config(function ($urlRouterProvider, $stateProvider) {
 
       var drink = this;
       this.model = _.find(drinks.items, 'id', id) || {
-          id: null,
           name: '',
           ethanolGrams: 16
         };
