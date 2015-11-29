@@ -19,6 +19,12 @@ var app = express()
   .use(morgan('dev'))
   .set('json spaces', 2);
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 // Register our REST API.
 registerApi(app);
 
