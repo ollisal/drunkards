@@ -65,14 +65,24 @@ m.config(function ($urlRouterProvider, $stateProvider) {
 
   $stateProvider.state('editDrink', {
     url: '/drink/{id}',
-    controller: function ($http, $state, $stateParams, drinks) {
+    controller: function ($scope, $http, $state, $stateParams, drinks) {
       var id = parseInt($stateParams.id, 10);
 
       var drink = this;
       this.model = _.find(drinks.items, 'id', id) || {
           name: '',
-          ethanolGrams: 16
+          volume: 33,
+          abv: 4.7
         };
+
+      if (!drink.model.id) {
+        // New drink, ask volume / abv
+        $scope.$watch(function () {
+          return drink.model.volume * drink.model.abv / 100.0;
+        }, function (newEthanolCentiliters) {
+          drink.model.ethanolGrams = Math.round(newEthanolCentiliters * 10.0 * 0.789);
+        });
+      }
 
       this.save = function () {
         if (drink.model.id) {

@@ -289,6 +289,34 @@
             </div>
           </div>
 
+          <div class="form-group" ng-if="!drink.model.id">
+            <label for="drinkVolume" class="col-xs-4 control-label">Volume (cl)</label>
+            <div class="col-xs-8">
+              <input type="number"
+                     id="drinkVolume"
+                     class="form-control"
+                     ng-required="true"
+                     min="0"
+                     max="1000"
+                     step="1"
+                     ng-model="drink.model.volume">
+            </div>
+          </div>
+
+          <div class="form-group" ng-if="!drink.model.id">
+            <label for="drinkAbv" class="col-xs-4 control-label">ABV (%)</label>
+            <div class="col-xs-8">
+              <input type="number"
+                     id="drinkAbv"
+                     class="form-control"
+                     ng-required="true"
+                     min="0"
+                     max="100"
+                     step="0.1"
+                     ng-model="drink.model.abv">
+            </div>
+          </div>
+
           <div class="form-group">
             <label for="drinkEthanol" class="col-xs-4 control-label">Total ethanol (g)</label>
             <div class="col-xs-8">
@@ -296,6 +324,7 @@
                      id="drinkEthanol"
                      class="form-control"
                      ng-required="true"
+                     ng-readonly="!drink.model.id"
                      min="0"
                      max="1000"
                      ng-model="drink.model.ethanolGrams">
